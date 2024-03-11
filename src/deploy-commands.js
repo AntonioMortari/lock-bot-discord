@@ -11,20 +11,21 @@ const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('
 
 const commands = [];
 
-for (const file of commandFiles) {
+commandFiles.forEach(file => {
     const command = require(`./commands/${file}`);
+
     if (command.data) {
         commands.push(command.data.toJSON());
     } else {
         console.log(`Erro: ${file} não contém dados de comando válidos.`);
     }
-}
+});
 
 // Instância REST
 const rest = new REST({ version: '10' }).setToken(BOT_TOKEN);
 
 // Função para registrar os comandos
-const registerCommands = async () => {
+const deployCommands = async () => {
     try {
         console.log(`Resetando ${commands.length} comandos...`);
 
@@ -33,6 +34,8 @@ const registerCommands = async () => {
             { body: commands }
         );
 
+        console.log(data);
+
         console.log('Comandos registrados com sucesso!');
     } catch (error) {
         console.error('Erro ao registrar comandos:', error);
@@ -40,4 +43,4 @@ const registerCommands = async () => {
 };
 
 // Chama a função para registrar os comandos
-registerCommands();
+deployCommands();
